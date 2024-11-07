@@ -1,1 +1,1 @@
-# 42_MINISHELL
+A 42 project meant to emulate a bash shell.

@@ -1,84 +1,84 @@
 # Minishell
 
-Minishell est un projet de l’école 42 qui consiste à créer, en C, un interpréteur de commandes inspiré de Bash. Il affiche une invite interactive, lit les commandes saisies, les analyse puis les exécute dans un processus ou une chaîne de processus.
+Minishell is a 42 school project that implements a command-line interpreter in C, inspired by Bash. It provides an interactive prompt, reads user input, parses commands, and executes them in one or more processes.
 
-> Ce projet reproduit un sous-ensemble des fonctionnalités d’un shell : il ne vise pas à remplacer Bash ni à en reproduire toute la grammaire.
+> This project implements a subset of shell features. It is not intended to replace Bash or reproduce its complete syntax.
 
-## Fonctionnalités
+## Features
 
-- Invite interactive avec historique des commandes grâce à GNU Readline.
-- Analyse de la ligne de commande : vérification des erreurs de syntaxe, tokenisation et prise en compte des guillemets simples et doubles.
-- Exécution de commandes et enchaînement par pipes (`|`).
-- Redirections d’entrée (`<`), de sortie (`>`), d’ajout (`>>`) et document here-doc (`<<`).
-- Expansion des variables d’environnement (`$NOM`) et du code de retour précédent (`$?`).
-- Commandes intégrées : `echo`, `cd`, `pwd`, `env`, `export`, `unset` et `exit`.
-- Gestion des signaux clavier, notamment `Ctrl-C` et `Ctrl-\`, avec un traitement particulier pendant la saisie d’un here-doc.
+- Interactive prompt and command history powered by GNU Readline.
+- Input validation and tokenization, with support for single and double quotes.
+- Command execution and pipelines using `|`.
+- Input redirection (`<`), output redirection (`>`), append redirection (`>>`), and here-documents (`<<`).
+- Expansion of environment variables (`$NAME`) and the previous command's exit status (`$?`).
+- Built-in commands: `echo`, `cd`, `pwd`, `env`, `export`, `unset`, and `exit`.
+- Keyboard signal handling, including `Ctrl-C` and `Ctrl-\\`, with dedicated handling while entering a here-document.
 
-## Prérequis
+## Requirements
 
-- Un environnement Unix/Linux avec un compilateur C (`cc`) et `make`.
-- GNU Readline et ses fichiers de développement (par exemple `libreadline-dev` sur Debian ou Ubuntu).
+- A Unix/Linux environment with a C compiler (`cc`) and `make`.
+- GNU Readline and its development headers (for example, `libreadline-dev` on Debian or Ubuntu).
 
-La bibliothèque utilitaire `pedro_lib` est incluse dans le dépôt et construite par le Makefile.
+The `pedro_lib` utility library is included in the repository and built by the Makefile.
 
-## Compilation et lancement
+## Build and run
 
-Depuis la racine du dépôt :
+From the repository root:
 
 ```sh
 make
 ./bin/minishell
 ```
 
-Le programme s’utilise de manière interactive. Il n’accepte pas d’arguments au lancement.
+Minishell runs interactively and does not accept command-line arguments at startup.
 
-Exemples de commandes à essayer :
+Example commands:
 
 ```sh
-echo "Bonjour $USER"
+echo "Hello $USER"
 pwd
 cat README.md | grep Minishell
 cat < README.md
-echo "sortie" >> sortie.txt
-cat << FIN
-Texte à saisir
-FIN
+echo "output" >> output.txt
+cat << EOF
+Type some text
+EOF
 ```
 
-## Commandes Makefile
+## Make targets
 
-| Commande | Action |
+| Target | Description |
 | --- | --- |
-| `make` ou `make all` | Compile le projet et produit `bin/minishell`. |
-| `make clean` | Supprime les fichiers objets. |
-| `make fclean` | Supprime les fichiers objets et l’exécutable généré. |
-| `make re` | Nettoie puis recompile le projet. |
+| `make` or `make all` | Builds the project and creates `bin/minishell`. |
+| `make clean` | Removes object files. |
+| `make fclean` | Removes object files and the generated executable. |
+| `make re` | Cleans and rebuilds the project. |
 
-## Organisation du projet
+## Project structure
 
 ```text
 .
-├── Includes/                 # En-tête principal et déclarations
-├── Libraries/pedro_lib/      # Bibliothèque utilitaire du projet
+├── Includes/                 # Main header and declarations
+├── Libraries/pedro_lib/      # Project utility library
 ├── srcs_mandatory/
-│   ├── Builtins/             # Commandes intégrées
-│   ├── Environnement/        # Initialisation et gestion de l’environnement
+│   ├── Builtins/             # Built-in commands
+│   ├── Environnement/        # Environment initialization and management
 │   ├── Exec/
-│   │   ├── the_exec/         # Processus, commandes et redirections
-│   │   └── the_parsing/      # Préparation des commandes et redirections
-│   ├── Expands/              # Expansion des variables et traitement des mots
-│   ├── Here_doc/             # Gestion des here-docs
-│   ├── Lexer/                # Découpage en tokens
-│   ├── Pre_parser/           # Vérifications syntaxiques préalables
-│   ├── Signals/              # Gestion des signaux
-│   └── Zmain_functions/      # Initialisation et boucle principale
-└── Makefile                  # Compilation et nettoyage
+│   │   ├── the_exec/         # Processes, commands, and redirections
+│   │   └── the_parsing/      # Command and redirection preparation
+│   ├── Expands/              # Variable expansion and word processing
+│   ├── Here_doc/             # Here-document handling
+│   ├── Lexer/                # Tokenization
+│   ├── Pre_parser/           # Preliminary syntax checks
+│   ├── Signals/              # Signal handling
+│   └── Zmain_functions/      # Initialization and main loop
+└── Makefile                  # Build and cleanup rules
 ```
 
-## Parcours d’une commande
+## Command processing
 
-Le traitement suit plusieurs étapes : vérification de la saisie, analyse lexicale, expansion des variables, préparation des commandes et des redirections, puis exécution. Les commandes reliées par des pipes sont lancées avec les flux correspondants ; les commandes intégrées sont traitées par le shell.
+Each input line goes through syntax checks, lexical analysis, variable expansion, and command/redirection preparation before execution. Commands connected by pipes are launched with the appropriate file descriptors; built-ins are handled by the shell.
 
-## À propos
+## About
 
-Projet pédagogique réalisé dans le cadre du cursus 42, autour de la programmation système en C : processus, descripteurs de fichiers, signaux, environnement et analyse de commandes.
+An educational project in the 42 curriculum focused on systems programming in C, including processes, file descriptors, signals, environment management, and command parsing.
